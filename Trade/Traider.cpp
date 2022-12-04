@@ -5,10 +5,10 @@ CreateID T_ID;
 void Traider::init()
 {
 	s_id = T_ID.work_with_id(-1);
-	s_valet = new double* [2];
+	s_valet = new double* [3];
 	s_Marketplace_count_activity = 0;
 	s_free_capital = 10000;
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 3; i++)
 	{
 		s_valet[i] = new double[s_MaxMarkets];
 	}
@@ -22,10 +22,10 @@ int Traider::Parsing(string Name_market)
 	int ansver = 0;
 	double buf;
 	double old = 0;
-
-	read.open(Name_market + "_coast.txt", ios_base::end);
+	string adres = path + Name_market + "_coast.txt";
+	read.open(adres, ios_base::end);
 	int size = read.tellg();
-	read.seekg((size - (size / rand()%40)), ios_base::beg);
+	read.seekg((size - (size / rand()%10)), ios_base::beg);
 
 	do
 	{
@@ -63,7 +63,8 @@ Traider::~Traider()
 	T_ID.work_with_id(s_id);
 
 	ofstream bacup;
-	bacup.open(this->s_Name + "_Bacup.txt", ios_base::app);
+	string adres = path + this->s_Name + "_Bacup.txt";
+	bacup.open(adres, ios_base::app);
 
 	bacup << "& " << this->s_free_capital << "\t"
 		<< this->s_Marketplace_count_activity << "\t";
@@ -81,7 +82,7 @@ Traider::~Traider()
 	delete[] s_valet;
 }
 
-void Traider::ante(Market& MarketName)
+void Traider::Ante(Market& MarketName)
 {
 	//get neaded parametrs
 	double free9_10 = this->s_free_capital - this->s_free_capital / 10;
@@ -89,51 +90,44 @@ void Traider::ante(Market& MarketName)
 	int Market_id = MarketName.GetId();
 	for (int i = 0; i < s_Marketplace_count_activity && Market_id != s_valet[i][0]; i++)
 		Market_id = i;
-	double sum = rand() % (int)pow(10, max_order_coast);
-
 	if (s_valet[Market_id][0] != MarketName.GetId())//create new 
 	{
 		this->s_valet[s_Marketplace_count_activity][0] = MarketName.GetId();
 		this->s_valet[s_Marketplace_count_activity][1] = 0;
 		this->s_Marketplace_count_activity++;
 	}
+	this->s_valet[Market_id][2] = MarketName.GetCoast();
 
-	if (free9_10 < sum && this->s_free_capital>0)
-	{
-		sum = free9_10;
-	}
-	
-	double Marketreqest = sum / MarketName.GetCoast();
-	if (rezult > s_old_parse)
+	//double Marketreqest = sum / MarketName.GetCoast();
+	//if (rezult < s_old_parse)
+	if (rand() % 200>100)
 	{//buy
-		if (MarketName.MakeOrder(Marketreqest))
+		double sum = rand() % (int)pow(10, max_order_coast);
+
+		if (free9_10 < sum && this->s_free_capital>0)
 		{
-			this->s_free_capital -= sum;
-			s_valet[Market_id][1] += Marketreqest;
+			sum = free9_10;
 		}
-		else
-		{
-			Marketreqest = sum / MarketName.GetCoast();
-			MarketName.MakeOrder(Marketreqest);
-		}
+		this->s_valet[Market_id][1] += MarketName.MakeOrder(sum);
+		this->s_free_capital -= sum;
 	}
 	else
 	{//sell
-		if (MarketName.MakeOrder(Marketreqest, 0) && s_valet[Market_id][1] > Marketreqest)
+		double count_of_tokens = this->s_valet[Market_id][1];
+		if ((int)(this->s_valet[Market_id][1]) > 0) 
 		{
-			this->s_free_capital += sum;
-			s_valet[Market_id][1] -= Marketreqest;
+			count_of_tokens = rand() % (int)(this->s_valet[Market_id][1]);
 		}
+		this->s_free_capital += MarketName.MakeOrder(count_of_tokens, 0);
+		this->s_valet[Market_id][1] -= count_of_tokens;
 	}
-	Tlogs(MarketName);
+	TLogs(MarketName);
 	s_old_parse = rezult;
 }
 //*/
-
-
-void Traider::Tlogs(Market& MarketName) 
+void Traider::TLogs(Market& MarketName) 
 {
-	string adres = this->s_Name + ".txt";
+	string adres = path + this->s_Name + ".txt";
 	log.open(adres, ios_base::app);
 	double Currency = MarketName.GetCoast();
 	int e = MarketName.GetId();
@@ -152,4 +146,19 @@ void Traider::Tlogs(Market& MarketName)
 string Traider::GetName()
 {
 	return this->s_Name;
+}
+
+double Traider::GetSummValet()
+{
+	double summ = 0;
+	for (size_t i = 0; i < s_Marketplace_count_activity; i++)
+	{
+		summ += this->s_valet[i][1] * this->s_valet[i][2];
+	}
+	return summ;
+}
+
+double Traider::GetCapital()
+{
+	return this->s_free_capital;
 }

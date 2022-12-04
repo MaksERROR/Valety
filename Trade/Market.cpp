@@ -25,9 +25,9 @@ void Market::Mlogs()
 
 	coast = bank/_sumSession;
 
-	string adres = Name + "_coast.txt";
+	string adres = "logs\\" + Name + "_coast.txt";
 	log.open(adres, ios_base::app);
-	log << coast << '\n';
+	log << coast << '\t' << session << '\t' << bank << '\t' << this->_sumSession << '\n';
 	log.close();
 	
 }
@@ -45,21 +45,26 @@ Market::Market(string Market_name)
 
 double Market::MakeOrder(double count, bool sell_buy)
 {
-	if (!sell_buy)
-	{//sell traider -> market
-		this->session += count;
-		coast = bank / session;//lower curse
-		this->bank -= count * this->coast;
+	if (sell_buy)
+	{//sell $money$ traider -> market
+		//count of money
+		double ret = count / this->coast;
+		this->bank += count;
+		this->session -= ret;
+		Mlogs();
+		return ret;
 	}
 	else
-	{//buy traider <- market
-		this->session -= count;
-		this->bank += count * coast;
+	{//buy $money$ traider <- market
+		//count of tokens
+		double ret = count * this->coast;
+		this->bank -= ret ;
+		this->session += count;
+		Mlogs();
+		return ret;
 	}
-	Mlogs();
-	double ret = count * this->coast;
-	coast = bank / session;//hier curse comission?
-	return ret;//old curce
+	
+	
 	
 }
 

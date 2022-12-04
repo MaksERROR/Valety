@@ -24,11 +24,13 @@ public:
 
 	Traider();
 	Traider(string Name);
-	void ante(Market& MarketName);
+	void Ante(Market& MarketName);
 	int GetId();
 	string GetName();
+	double GetSummValet();
+	double GetCapital();
 
-	void Tlogs(Market& MarketName);
+	void TLogs(Market& MarketName);
 
 	~Traider();
 };
