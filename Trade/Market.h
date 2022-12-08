@@ -16,8 +16,6 @@ private:
 	ofstream log;
 	
 	void init();
-	void UpDateCource();
-
 
 public:
 
@@ -28,8 +26,7 @@ public:
 	double GetBank();
 	string GetName();
 	double GetCoast();
-	void Mlogs(bool all_log);
-	
+	void Mlogs();
 
 	~Market();
 };

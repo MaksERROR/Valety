@@ -1,17 +1,16 @@
 #include "Traider.h"
-
 #include "Constants.h"
 CreateID T_ID;
 
 void Traider::init()
 {
 	s_id = T_ID.work_with_id(-1);
-	
+	s_valet = new double* [3];
 	s_Marketplace_count_activity = 0;
 	s_free_capital = 10000;
 	for (size_t i = 0; i < 3; i++)
 	{
-		s_valet.push_back(vector<double>(3));
+		s_valet[i] = new double[s_MaxMarkets];
 	}
 	if (this->s_Name != "")
 		return;
@@ -41,17 +40,6 @@ int Traider::Parsing(string Name_market)
 
 	read.close();
 	return ansver;
-}
-
-void Traider::Traider_log()
-{
-	ofstream log_file_Traider;
-	log_file_Traider.open("logs\\all_sum_Traider" + to_string(this->s_id) + ".txt", ios_base::app);
-	log_file_Traider << this->s_id << "\t"
-		<< this->s_Name << "\t"
-		<< this->GetSummValet() << "\t"
-		<< this->s_free_capital << "\n";
-	log_file_Traider.close();
 }
 
 Traider::Traider()
@@ -86,6 +74,12 @@ Traider::~Traider()
 	}
 	bacup << "\n";
 	bacup.close();
+
+	for (size_t i = 0; i < s_Marketplace_count_activity; i++)
+	{
+		delete[] s_valet[i];
+	}
+	delete[] s_valet;
 }
 
 void Traider::Ante(Market& MarketName)
@@ -98,7 +92,6 @@ void Traider::Ante(Market& MarketName)
 		Market_id = i;
 	if (s_valet[Market_id][0] != MarketName.GetId())//create new 
 	{
-		this->s_valet.push_back(vector<double>(3));
 		this->s_valet[s_Marketplace_count_activity][0] = MarketName.GetId();
 		this->s_valet[s_Marketplace_count_activity][1] = 0;
 		this->s_Marketplace_count_activity++;
