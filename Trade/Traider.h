@@ -1,4 +1,5 @@
 #include "CraeteID.h"
+#include <vector>
 #include <string>
 #include "Market.h"
 #include <fstream>
@@ -15,11 +16,13 @@ private:
 	ifstream read;
 	ofstream log;
 	
-	double** s_valet;//id;traiders active[n][1]
+	vector <vector<double>> s_valet;//id;traiders active[n][1] course
 	int s_Marketplace_count_activity;//count of active markets
 	int s_old_parse;
 	int Parsing(string Name_market);
 	void init();
+	double GetSummValet();
+
 public:
 
 	Traider();
@@ -27,8 +30,8 @@ public:
 	void Ante(Market& MarketName);
 	int GetId();
 	string GetName();
-	double GetSummValet();
 	double GetCapital();
+	void Traider_log();
 
 	void TLogs(Market& MarketName);
 

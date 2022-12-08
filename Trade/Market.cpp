@@ -9,13 +9,13 @@ void Market::init()
 	this->_sumSession = this->session;
 	this->BaseUp = this->session / 2;
 	this->bank = 1000;
-	this->coast = bank/_sumSession;
+	UpDateCource();
 	if (this->Name != "")
 		return;
 	this->Name = "Market_No_" + to_string(id);
 }
 
-void Market::Mlogs()
+void Market::Mlogs(bool all_log)
 {
 	if (this->session<= (BaseUp/2))
 	{
@@ -27,10 +27,29 @@ void Market::Mlogs()
 
 	string adres = "logs\\" + Name + "_coast.txt";
 	log.open(adres, ios_base::app);
-	log << coast << '\t' << session << '\t' << bank << '\t' << this->_sumSession << '\n';
+	log << this->coast << '\t'
+		<< this->session << '\t'
+		<< this->bank << '\t'
+		<< this->_sumSession << '\n';
 	log.close();
-	
+	if (all_log)
+	{
+		ofstream log_file_Market;
+		log_file_Market.open("logs\\all_sum_market" + to_string(this->id) + ".txt", ios_base::app);
+		log_file_Market << this->id << "\t"
+			<< this->Name << "\t"
+			<< this->bank << "\t"
+			<< this->coast << "\n";
+		log_file_Market.close();
+	}
 }
+
+void Market::UpDateCource() 
+{
+	this->coast = bank / _sumSession;
+}
+
+
 
 Market::Market()
 {
@@ -51,7 +70,7 @@ double Market::MakeOrder(double count, bool sell_buy)
 		double ret = count / this->coast;
 		this->bank += count;
 		this->session -= ret;
-		Mlogs();
+		Mlogs(0);
 		return ret;
 	}
 	else
@@ -60,7 +79,7 @@ double Market::MakeOrder(double count, bool sell_buy)
 		double ret = count * this->coast;
 		this->bank -= ret ;
 		this->session += count;
-		Mlogs();
+		Mlogs(0);
 		return ret;
 	}
 	
