@@ -24,16 +24,18 @@ void Traider_log(Traider& B)
 		<< B.GetCapital() << "\n";
 	log_file_Traider.close();
 }
-
+const int size_A = 200;
 int main()
 {
 	ofstream logcmd;
-	Market A[2];
+	Market A[size_A];
 	//cout<<A.GetName();
 	Traider B[10];
-	A[0].Mlogs();
-	A[1].Mlogs();
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < size_A; i++)
+	{
+		A[i].Mlogs();
+	}
+	for (size_t i = 0; i < size_A; i++)
 	{
 		Market_log(A[i]);
 	}
@@ -46,24 +48,21 @@ int main()
 	{
 		for (size_t j = 0; j < 10; j++)
 		{
-			for (size_t g = 0; g < 2; g++)
+			for (size_t g = 0; g < size_A; g++)
 			{
 				B[j].Ante(A[g]);
 				A[g].Mlogs();
 			}
-			cout << A[0].GetId() << "\t"
-				<< A[0].GetCoast() << "\t"
-				<< A[0].GetBank() << "\n"
-				<< A[1].GetId() << "\t"
-				<< A[1].GetCoast() << "\t"
-				<< A[1].GetBank() << "\n";
-
-			logcmd << A[0].GetId() << "\t"
-				<< A[0].GetCoast() << "\t"
-				<< A[0].GetBank() << "\n"
-				<< A[1].GetId() << "\t"
-				<< A[1].GetCoast() << "\t"
-				<< A[1].GetBank() << "\n";
+			for (size_t i = 0; i < size_A; i++)
+			{
+				cout << A[i].GetId() << "\t"
+					<< A[i].GetCoast() << "\t"
+					<< A[i].GetBank() << "\n";
+				logcmd << A[i].GetId() << "\t"
+					<< A[i].GetCoast() << "\t"
+					<< A[i].GetBank() << "\n";
+			}
+				
 		}
 	}
 	logcmd.close();

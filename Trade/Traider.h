@@ -21,10 +21,10 @@ private:
 	int s_old_parse;
 	int Parsing(string Name_market);
 	void init();
-	double GetSummValet();
 
 public:
 
+	double GetSummValet();
 	Traider();
 	Traider(string Name);
 	void Ante(Market& MarketName);
