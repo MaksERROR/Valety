@@ -61,7 +61,7 @@ double Market::MakeOrder(double count, bool sell_buy)
 	if (sell_buy)
 	{//sell $money$ traider -> market
 		//count of money
-		if (this->session<ret)
+		if (this->session<sell_buy)
 		{
 			ret = this->session;
 		}
@@ -72,7 +72,7 @@ double Market::MakeOrder(double count, bool sell_buy)
 	else
 	{//buy $money$ traider <- market
 		//count of tokens
-		if (this->bank < ret)
+		if (this->bank < sell_buy)
 		{
 			ret = this->bank;
 		}

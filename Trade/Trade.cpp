@@ -64,7 +64,7 @@ void Traider_pool(int index, string Name = "")
 int main()
 {
 	ofstream logcmd;
-	for (size_t i = 0; i < 20; i++)
+	for (size_t i = 0; i < Count_of_markets; i++)
 	{
 		Market_log(Market_Arr[i]);
 		Market_Arr[i].Mlogs();
