@@ -6,6 +6,7 @@ void Market::init()
 {
 	id = M_ID.work_with_id(-1);
 	this->session = 1000;
+	this->active = 0;
 	this->_sumSession = this->session;
 	this->BaseUp = this->session / 2;
 	this->bank = 1000;
@@ -25,16 +26,21 @@ void Market::Mlogs()
 
 	coast = bank/_sumSession;
 
-	string adres = "logs\\" + Name + "_coast.txt";
+	string adres = "logs\\" + this->Name + "_coast.txt";
 	log.open(adres, ios_base::app);
 	log << coast << '\t' << session << '\t' << bank << '\t' << this->_sumSession << '\n';
 	log.close();
-	
 }
 
 Market::Market()
 {
 	init();
+}
+
+Market::Market(int new_id)
+{
+	init();
+	this->id = new_id;
 }
 
 Market::Market(string Market_name)
@@ -45,27 +51,30 @@ Market::Market(string Market_name)
 
 double Market::MakeOrder(double count, bool sell_buy)
 {
+	active += 1;
+	if (this->active > 1) 
+	{
+		active -= 1;
+		return 0;
+	}
+	double ret;
 	if (sell_buy)
 	{//sell $money$ traider -> market
 		//count of money
-		double ret = count / this->coast;
+		ret = count / this->coast;
 		this->bank += count;
 		this->session -= ret;
-		Mlogs();
-		return ret;
 	}
 	else
 	{//buy $money$ traider <- market
 		//count of tokens
-		double ret = count * this->coast;
+		ret = count * this->coast;
 		this->bank -= ret ;
 		this->session += count;
-		Mlogs();
-		return ret;
 	}
-	
-	
-	
+	Mlogs();
+	active -= 1;
+	return ret;
 }
 
 int Market::GetId()

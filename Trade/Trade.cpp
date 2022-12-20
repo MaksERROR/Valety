@@ -1,15 +1,21 @@
 ﻿#include <iostream>
 #include "Traider.h"
+#include <windows.h>
 #include <string>
 
 using namespace std;
+
+const int Count_of_markets = 20;
+CreateID A;
+
+Market Market_Arr[Count_of_markets];
+bool stop = 1;
 
 void Market_log(Market& A)
 {
 	ofstream log_file_Market;
 	log_file_Market.open("logs\\all_sum_market" + to_string(A.GetId()) + ".txt", ios_base::app);
 	log_file_Market << A.GetId() << "\t"
-		<< A.GetName() << "\t"
 		<< A.GetBank() << "\t"
 		<< A.GetCoast() << "\n";
 	log_file_Market.close();
@@ -24,54 +30,66 @@ void Traider_log(Traider& B)
 		<< B.GetCapital() << "\n";
 	log_file_Traider.close();
 }
-const int size_A = 200;
+
+
+void Traider_pool(int index, string Name = "")
+{
+	Traider S(index);
+	Traider_log(S);
+	int arr[Count_of_markets];
+	while (stop)
+	{
+		for (int g = 0; g < Count_of_markets; g++)
+		{
+			arr[g] = S.Parsing(Market_Arr[g].GetName());
+		}
+		int min = arr[0];
+		int max = 0;
+		for (int i = 0; i < Count_of_markets; i++)
+		{
+			if (arr[i] < arr[min])
+				min = i;
+			if (arr[i] > arr[max])
+				max = i;
+		}
+		S.Ante(Market_Arr[min], -rand() % 10);
+		S.Ante(Market_Arr[max], rand() % 100);
+
+	}
+	Traider_log(S);
+	A.work_with_id(-1);
+}
+
+
 int main()
 {
 	ofstream logcmd;
-	Market A[size_A];
-	//cout<<A.GetName();
-	Traider B[10];
-	for (size_t i = 0; i < size_A; i++)
+	for (size_t i = 0; i < 20; i++)
 	{
-		A[i].Mlogs();
+		Market_log(Market_Arr[i]);
+		Market_Arr[i].Mlogs();
 	}
-	for (size_t i = 0; i < size_A; i++)
+	for (size_t i = 0; i < 24; i++)
 	{
-		Market_log(A[i]);
+		CreateThread(
+			NULL,
+			NULL,
+			(LPTHREAD_START_ROUTINE)Traider_pool,
+			(LPVOID)(A.work_with_id(-1)),
+			NULL,
+			NULL
+		);
 	}
-	for (size_t i = 0; i < 10; i++)
+	while (stop)
 	{
-		Traider_log(B[i]);
+		cout << "Set 0 to shutdown the program:\n";
+		cin >> stop;
+		system("cls");
 	}
-	logcmd.open("logs\\cmd_log.txt", ios_base::app);
-	for (size_t i = 0; i < 200; i++)
+	// delay to close the threads
+
+	for (size_t i = 0; i < Count_of_markets; i++)
 	{
-		for (size_t j = 0; j < 10; j++)
-		{
-			for (size_t g = 0; g < size_A; g++)
-			{
-				B[j].Ante(A[g]);
-				A[g].Mlogs();
-			}
-			for (size_t i = 0; i < size_A; i++)
-			{
-				cout << A[i].GetId() << "\t"
-					<< A[i].GetCoast() << "\t"
-					<< A[i].GetBank() << "\n";
-				logcmd << A[i].GetId() << "\t"
-					<< A[i].GetCoast() << "\t"
-					<< A[i].GetBank() << "\n";
-			}
-				
-		}
-	}
-	logcmd.close();
-	for (size_t i = 0; i < 2; i++)
-	{
-		Market_log(A[i]);
-	}
-	for (size_t i = 0; i < 10; i++)
-	{
-		Traider_log(B[i]);
+		Market_log(Market_Arr[i]);
 	}
 }

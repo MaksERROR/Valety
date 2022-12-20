@@ -19,16 +19,17 @@ private:
 	vector <vector<double>> s_valet;//id;traiders active[n][1] course
 	int s_Marketplace_count_activity;//count of active markets
 	int s_old_parse;
-	int Parsing(string Name_market);
 	void init();
 
 public:
 
 	double GetSummValet();
 	Traider();
+	Traider(int new_id);
 	Traider(string Name);
-	void Ante(Market& MarketName);
 	int GetId();
+	void Ante(Market& MarketName,int sell_by);
+	int Parsing(string Name_market);
 	string GetName();
 	double GetCapital();
 	void Traider_log();
