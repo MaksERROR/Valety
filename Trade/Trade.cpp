@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int Count_of_markets = 2;
+const int Count_of_markets = 3;
 CreateID A;
 
 Market Market_Arr[Count_of_markets];
@@ -43,7 +43,7 @@ void Traider_pool(int index, string Name = "")
 		{
 			arr[g] = S.Parsing(Market_Arr[g].GetName());
 		}
-		int min = arr[0];
+		int min = 0;
 		int max = 0;
 		for (int i = 0; i < Count_of_markets; i++)
 		{
@@ -54,6 +54,7 @@ void Traider_pool(int index, string Name = "")
 		}
 		S.Ante(Market_Arr[min], -rand() % 10);
 		S.Ante(Market_Arr[max], rand() % 100);
+		
 
 	}
 	Traider_log(S);
@@ -69,7 +70,7 @@ int main()
 		Market_log(Market_Arr[i]);
 		Market_Arr[i].Mlogs();
 	}
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
 		CreateThread(
 			NULL,

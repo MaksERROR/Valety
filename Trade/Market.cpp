@@ -8,7 +8,7 @@ void Market::init()
 	this->session = 1000;
 	this->active = 0;
 	this->_sumSession = this->session;
-	this->BaseUp = this->session / 2;
+	this->BaseUp = this->session;
 	this->bank = 1000;
 	this->coast = bank/_sumSession;
 	if (this->Name != "")
@@ -18,7 +18,7 @@ void Market::init()
 
 void Market::Mlogs()
 {
-	if (this->session<= (BaseUp/2))
+	if (this->session<= (BaseUp))
 	{
 		this->session += BaseUp;
 		this->_sumSession += BaseUp;
@@ -57,28 +57,32 @@ double Market::MakeOrder(double count, bool sell_buy)
 		active -= 1;
 		return 0;
 	}
+
+
 	double ret;
 	if (sell_buy)
 	{//sell $money$ traider -> market
 		//count of money
-		if (this->session<sell_buy)
-		{
-			ret = this->session;
-		}
 		ret = count / this->coast;
-		this->bank += count;
-		this->session -= ret;
+		if (this->session > ret)
+		{
+			this->bank += count;
+			this->session -= ret;
+		}
+		else
+			return -this->session;
 	}
 	else
 	{//buy $money$ traider <- market
 		//count of tokens
-		if (this->bank < sell_buy)
-		{
-			ret = this->bank;
-		}
 		ret = count * this->coast;
-		this->bank -= ret ;
-		this->session += count;
+		if (ret < this->bank)
+		{
+			this->bank -= ret;
+			this->session += count;
+		}
+		else
+			return -this->bank;
 	}
 	Mlogs();
 	active -= 1;

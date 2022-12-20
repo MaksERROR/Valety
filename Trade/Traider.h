@@ -29,7 +29,7 @@ public:
 	Traider(string Name);
 	int GetId();
 	void Ante(Market& MarketName,int sell_by);
-	int Parsing(string Name_market);
+	double Parsing(string Name_market);
 	string GetName();
 	double GetCapital();
 	void Traider_log();
