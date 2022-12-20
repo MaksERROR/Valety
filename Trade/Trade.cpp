@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int Count_of_markets = 20;
+const int Count_of_markets = 2;
 CreateID A;
 
 Market Market_Arr[Count_of_markets];
@@ -69,7 +69,7 @@ int main()
 		Market_log(Market_Arr[i]);
 		Market_Arr[i].Mlogs();
 	}
-	for (size_t i = 0; i < 24; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
 		CreateThread(
 			NULL,
