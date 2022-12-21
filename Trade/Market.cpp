@@ -55,6 +55,7 @@ double Market::MakeOrder(double count, bool sell_buy)
 	if (this->active > 1) 
 	{
 		active -= 1;
+		Mlogs();
 		return 0;
 	}
 
@@ -69,8 +70,11 @@ double Market::MakeOrder(double count, bool sell_buy)
 			this->bank += count;
 			this->session -= ret;
 		}
-		else
+		else 
+		{
+			Mlogs();
 			return -this->session;
+		}
 	}
 	else
 	{//buy $money$ traider <- market
@@ -81,8 +85,11 @@ double Market::MakeOrder(double count, bool sell_buy)
 			this->bank -= ret;
 			this->session += count;
 		}
-		else
+		else 
+		{
+			Mlogs();
 			return -this->bank;
+		}
 	}
 	Mlogs();
 	active -= 1;

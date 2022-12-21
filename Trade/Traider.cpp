@@ -77,25 +77,6 @@ int Traider::GetId()
 	return this->s_id;
 }
 
-Traider::~Traider()
-{
-	T_ID.work_with_id(s_id);
-
-	ofstream bacup;
-	string adres = path + this->s_Name + "_Bacup.txt";
-	bacup.open(adres, ios_base::app);
-
-	bacup << "& " << this->s_free_capital << "\t"
-		<< this->s_Marketplace_count_activity << "\t";
-	for (size_t i = 0; i < s_Marketplace_count_activity; i++)
-	{
-		bacup << this->s_valet[i][0] << "\t" << this->s_valet[i][1] << "\t";
-	}
-	bacup << "\n";
-	bacup.close();
-}
-
-
 
 void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 {
@@ -114,8 +95,6 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 		this->s_Marketplace_count_activity++;
 	}
 	this->s_valet[Market_id][2] = Market_indexing.GetCoast();
-
-
 
 
 	if (sell_by !=0)
@@ -266,7 +245,28 @@ double Traider::GetSummValet()
 	return summ;
 }
 
+
 double Traider::GetCapital()
 {
 	return this->s_free_capital;
 }
+
+
+Traider::~Traider()
+{
+	T_ID.work_with_id(s_id);
+
+	ofstream bacup;
+	string adres = path + this->s_Name + "_Bacup.txt";
+	bacup.open(adres, ios_base::app);
+
+	bacup << "& " << this->s_free_capital << "\t"
+		<< this->s_Marketplace_count_activity << "\t";
+	for (size_t i = 0; i < s_Marketplace_count_activity; i++)
+	{
+		bacup << this->s_valet[i][0] << "\t" << this->s_valet[i][1] << "\t";
+	}
+	bacup << "\n";
+	bacup.close();
+}
+
