@@ -44,3 +44,14 @@ int CreateID::Max_used_ids()
 {
 	return s_Id;
 }
+
+bool CreateID::This_id_created(int get_id)
+{
+	if (get_id<=s_Id)
+		for (size_t i = 0; i < Free_ids; i++)
+			if (get_id == Free_id[i])
+				return 0;
+	else
+		return 0;
+	return 1;
+}

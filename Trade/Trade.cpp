@@ -2,10 +2,9 @@
 #include "Traider.h"
 #include <windows.h>
 #include <string>
-
+#include "Constants.h"
 using namespace std;
 
-const int Count_of_markets = 3;
 CreateID A;
 
 Market Market_Arr[Count_of_markets];
@@ -52,8 +51,8 @@ void Traider_pool(int index, string Name = "")
 			if (arr[i] > arr[max])
 				max = i;
 		}
-		S.Ante(Market_Arr[min], -rand() % 10);
-		S.Ante(Market_Arr[max], rand() % 100);
+		S.Ante(Market_Arr[min], 0); //-rand() % 10 - 1
+		S.Ante(Market_Arr[max], 0);//rand() % 10 + 1
 		
 
 	}
@@ -70,7 +69,7 @@ int main()
 		Market_log(Market_Arr[i]);
 		Market_Arr[i].Mlogs();
 	}
-	for (size_t i = 0; i < 1; i++)
+	for (size_t i = 0; i < 2; i++)
 	{
 		CreateThread(
 			NULL,

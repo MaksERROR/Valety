@@ -14,6 +14,7 @@ public:
 	
 	int work_with_id(int What);
 	int Max_used_ids();
+	bool This_id_created(int get_id);
 
 	~CreateID();
 };

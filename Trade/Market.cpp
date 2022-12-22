@@ -52,44 +52,43 @@ Market::Market(string Market_name)
 double Market::MakeOrder(double count, bool sell_buy)
 {
 	active += 1;
-	if (this->active > 1) 
+	if (this->active > 1) //if active >1 retry
 	{
 		active -= 1;
 		Mlogs();
 		return 0;
 	}
-
-
-	double ret;
-	if (sell_buy)
-	{//sell $money$ traider -> market
-		//count of money
-		ret = count / this->coast;
-		if (this->session > ret)
-		{
-			this->bank += count;
-			this->session -= ret;
-		}
-		else 
+	if (sell_buy)//test have i this count
+	{
+		if (count / this->coast > this->session)//more then market have ?
 		{
 			Mlogs();
 			return -this->session;
 		}
 	}
 	else
-	{//buy $money$ traider <- market
-		//count of tokens
-		ret = count * this->coast;
-		if (ret < this->bank)
-		{
-			this->bank -= ret;
-			this->session += count;
-		}
-		else 
+	{
+		if (count * this->coast > this->bank)
 		{
 			Mlogs();
 			return -this->bank;
 		}
+	}
+
+	double ret;
+	if (sell_buy)
+	{//sell $money$ traider -> market
+		//count of money
+		ret = count / this->coast;
+		this->bank += count;
+		this->session -= ret;
+	}
+	else
+	{//buy $money$ traider <- market
+		//count of tokens
+		ret = count * this->coast;
+		this->bank -= ret;
+		this->session += count;
 	}
 	Mlogs();
 	active -= 1;

@@ -9,9 +9,10 @@ void Traider::init()
 
 	s_Marketplace_count_activity = 0;
 	s_free_capital = 10000;
-	for (size_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < Count_of_markets; i++)
 	{
 		s_valet.push_back(vector<double>(3));
+		s_valet[i][0] = -4;
 	}
 	if (this->s_Name != "")
 		return;
@@ -82,16 +83,19 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 {
 	//get neaded parametrs
 	double free9_10 = this->s_free_capital - this->s_free_capital / 10;
-	int Market_id = Market_indexing.GetId();
+	int Market_id = -1;
 
-	for (int i = 0; i < s_Marketplace_count_activity && Market_id != s_valet[i][0]; i++)
+	for (int i = 0; i < s_Marketplace_count_activity && Market_indexing.GetId() != (int)s_valet[i][0]; i++) 
+	{
 		Market_id = i;
-
+	}
+	Market_id++;
 	if (s_valet[Market_id][0] != Market_indexing.GetId())//create new 
 	{
 		this->s_valet.push_back(vector<double>(3));
 		this->s_valet[s_Marketplace_count_activity][0] = Market_indexing.GetId();
 		this->s_valet[s_Marketplace_count_activity][1] = 0;
+		s_valet[s_valet.size() - 1][0] = -1;
 		this->s_Marketplace_count_activity++;
 	}
 	this->s_valet[Market_id][2] = Market_indexing.GetCoast();
@@ -113,8 +117,8 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 				}
 				else
 				{
-					sum = -geted;
-					double geted = Market_indexing.MakeOrder(sum);
+					sum = -geted/2;
+					geted = Market_indexing.MakeOrder(sum);
 					if (geted > 0)
 					{
 						this->s_valet[Market_id][1] += geted;
@@ -124,7 +128,7 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 			}
 			else
 			{
-				double geted = Market_indexing.MakeOrder(this->s_free_capital);
+				double geted = Market_indexing.MakeOrder(this->s_free_capital/1.09);
 				if (geted > 0)
 				{
 					this->s_valet[Market_id][1] += geted;
@@ -132,7 +136,7 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 				}
 				else
 				{
-					sum = -geted;
+					sum = -geted/2;
 					geted = Market_indexing.MakeOrder(sum);
 					if (geted > 0)
 					{
@@ -144,19 +148,19 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 		}
 		else 
 		{//sell
-			double count_of_tokens = sell_by;
-			if ((int)(this->s_valet[Market_id][1]) > 0 && count_of_tokens< this->s_valet[Market_id][1])
+			double count_of_tokens = -sell_by;
+			if ((int)(this->s_valet[Market_id][1]) > 0 && count_of_tokens < this->s_valet[Market_id][1])
 			{
 				double poop = Market_indexing.MakeOrder(count_of_tokens, 0);
-				if (poop < 0)
+				if (poop > 0)
 				{
 					this->s_free_capital += poop * Market_indexing.GetCoast();
 					this->s_valet[Market_id][1] -= poop;
 				}
 				else
 				{
-					poop = Market_indexing.MakeOrder(-poop, 0);
-					if (poop < 0)
+					poop = Market_indexing.MakeOrder(-poop/2, 0);
+					if (poop > 0)
 					{
 						this->s_free_capital += poop * Market_indexing.GetCoast();
 						this->s_valet[Market_id][1] -= poop;
@@ -165,16 +169,21 @@ void Traider::Ante(Market& Market_indexing, int sell_by = 0)
 			}
 			else
 			{
-				double poop = Market_indexing.MakeOrder(this->s_valet[Market_id][1], 0);
-				if (poop < 0)
+				if (this->s_valet[Market_id][1] == 0) 
+				{
+					TLogs(Market_indexing);
+					return;
+				}
+				double poop = Market_indexing.MakeOrder(this->s_valet[Market_id][1]/1.09, 0);
+				if (poop > 0)
 				{
 					this->s_free_capital += poop;
 					this->s_valet[Market_id][1] -= count_of_tokens;
 				}
 				else
 				{
-					poop = Market_indexing.MakeOrder(-poop, 0);
-					if (poop < 0)
+					poop = Market_indexing.MakeOrder(-poop/2, 0);
+					if (poop > 0)
 					{
 						this->s_free_capital += poop;
 						this->s_valet[Market_id][1] -= count_of_tokens;
